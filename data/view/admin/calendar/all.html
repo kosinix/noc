@@ -1,0 +1,54 @@
+{% extends "document.html" %}
+{% block body %}
+<div class="row">
+    <div class="col-12 pt-5">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active font-weight-bold" href="/admin/calendar/all">Calendar</a>
+            </li>
+        </ul>
+        <div class="tab-content p-3" style="border-radius:0 0 5px 5px;">
+            {% include 'parts/flash.html' %}
+            
+            <div class="d-flex align-items-center justify-content-center m-3">
+                <a href="?date={{prevDate|format_date('YYYY-MM-DD')}}" class="btn btn-sm btn-light">&laquo;</a>
+                <span class="ml-3 mr-3">{{momentDate|format_date('MMMM, YYYY')}}</span>
+                <a href="?date={{nextDate|format_date('YYYY-MM-DD')}}" class="btn btn-sm btn-light">&raquo;</a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-calendar table-bordered">
+                    {% for row in matrix.splice(0, 1) %}
+                        <tr>
+                            {% for cell in row %}
+                            <th class="{{cell.classes}}" width="14%">
+                                {{cell.value}}
+                            </th>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    {% for row in matrix %}
+                        <tr>
+                            {% for cell in row %}
+                            <td class="{{cell.classes}} p-1">
+                                <div style="min-height:60px">
+                                    <div class="text-right"> <a href="/admin/calendar/view/{{cell.value}}">{{cell.value|format_date('D')}}</a></div>
+                                    {%- if cell.tasks.length > 0 %}
+                                        <div class="bg-info rounded p-1">
+                                            <a href="/admin/calendar/view/{{cell.value}}/task/all" class="log text-white">Task: {{cell.tasks.length}}</a>
+                                        </div>
+                                    {% endif -%}
+                                </div>
+                            </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+{% endblock %}

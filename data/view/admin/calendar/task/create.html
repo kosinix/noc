@@ -1,0 +1,118 @@
+{% extends "document.html" %}
+{% block body %}
+<div id="vApp" data-pending="pending" v-cloak class="row">
+    <div class="col-12 pt-5">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active font-weight-bold" href="/admin/calendar/all">Calendar</a>
+            </li>
+        </ul>
+        <div class="tab-content p-3" style="border-radius:0 0 5px 5px;">
+            {% include 'parts/flash.html' %}
+            <div class="p-3">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active font-weight-bold" href="/admin/calendar/all">Tasks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/calendar/view/{{date|format_date('YYYY-MM-DD')}}/event/all">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/calendar/view/{{date|format_date('YYYY-MM-DD')}}/document/all">Documents</a>
+                    </li>
+                </ul>
+                <div class="tab-content p-3" style="border-radius:0 0 5px 5px;">
+                    <a href="/admin/calendar/view/{{date|format_date('YYYY-MM-DD')}}/task/all" class="btn btn-dark mb-3">Cancel</a>
+
+                    <form ref="form" v-on:submit.prevent="onSubmit" action="" method="POST">
+                        
+                        <div class="form-group" v-bind:data-error="errors['name']" v-on:click="errors.name=false">
+                            <label for="name" class="mr-1">Name</label>
+                            <input v-model="name" name="name" id="name" type="text" class="form-control">
+                        </div>
+                        <div class="form-group" v-bind:data-error="errors['description']" v-on:click="errors.description=false">
+                            <label for="description" class="mr-1">Description</label>
+                            <textarea v-model="description" name="description" id="description" class="form-control"></textarea>
+                        </div>
+                        
+                        <div class="form-group" v-bind:data-error="errors['status']" v-on:click="errors.status=false">
+                            <label for="status" class="mr-1">Status</label>
+                            <select v-model="status" name="status" id="status" class="form-control">
+                                <option value="">- SELECT -</option>
+                                <option value="1">Pending</option>
+                                <option value="2">Doing</option>
+                                <option value="3">DONE</option>
+                            </select>
+                        </div>
+                        <div class="form-group" v-bind:data-error="errors['dueAt']" v-on:click="errors.dueAt=false">
+                            <label for="dueAt" class="mr-1">Due</label>
+                            <input v-model="dueAt" name="dueAt" id="dueAt" type="date" class="form-control">
+                        </div>
+                        <div class="text-center">
+                            <button class="btn btn-primary btn-lg">Add Task</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        mixins: [],
+        data: {
+            errors: {
+                status: false,
+                description: false,
+                name: false,
+                dueAt: false,
+            },
+            pending: false,
+            name: '',
+            description: '',
+            status: '1',
+            dueAt: '{{date|format_date("YYYY-MM-DD")}}',
+        },
+        computed: {
+           
+        },
+        watch: {
+           
+        },
+        mounted: function () {
+           
+            
+        },
+        methods: {
+            onSubmit: function () {
+                try {
+                    const me = this;
+                    Object.keys(this.$data).forEach(key => {
+                        if(typeof this[key] === 'string'){
+                            this[key] = this[key].trim()
+                        }
+                    });
+                    if (!me.name) {
+                        me.errors['name'] = true
+                        throw new Error('Please specify the Name.')
+                    }
+
+                    me.pending = true;
+                    me.$nextTick(function() {
+                        me.$refs.form.submit();
+                    });
+
+                } catch (err) {
+                    alert(err)
+                }
+            }
+        }
+    });
+    
+</script>
+{% endblock %}

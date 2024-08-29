@@ -1,0 +1,57 @@
+{
+  "app": {
+    "title": "Notes on Calendar",
+    "description": "",
+    "port": "9103",
+    "url": "http://localhost:9103",
+    "dir": "${APP_DIR}",
+    "dirs": {
+      "data": "${APP_DIR}/data",
+      "src": "${APP_DIR}/src",
+      "public": "${APP_DIR}/data/public",
+      "view": "${APP_DIR}/data/view",
+      "upload": "${APP_DIR}/data/upload"
+    }
+  },
+  "express": {
+    "trustProxy": false
+  },
+  "nunjucks": {
+    "loader": {
+      "watch": false,
+      "noCache": true
+    },
+    "environment": {
+      "autoescape": true,
+      "throwOnUndefined": false,
+      "trimBlocks": false,
+      "lstripBlocks": false
+    }
+  },
+  "session": {
+    "name": "nic_app_sid",
+    "store": {
+      "db": "sessions.db",
+      "dir": "${APP_DIR}/data"
+    },
+    "cookie": {
+      "httpOnly": false,
+      "maxAge": 31536000000,
+      "secure": false,
+      "sameSite": false
+    }
+  },
+  "sqlite": {
+    "username": "",
+    "db": "${APP_DIR}/data/app.db"
+  },
+  "aws": {
+    "region": "ap-southeast-1",
+    "bucket1": {
+      "name": "ph-gsu-ict",
+      "url": "https://ph-gsu-ict.s3-ap-southeast-1.amazonaws.com/files-dev/",
+      "prefix": "files-dev"
+    }
+  },
+  "loginDelay": 0
+}

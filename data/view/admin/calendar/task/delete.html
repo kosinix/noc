@@ -1,0 +1,173 @@
+{% extends "document.html" %}
+{% block body %}
+<div id="vApp" v-cloak v-bind:data-pending="pending" class="row">
+    <div class="col-12 pt-5">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active font-weight-bold" href="/admin/calendar/all">Calendar</a>
+            </li>
+        </ul>
+        <div class="tab-content p-3" style="border-radius:0 0 5px 5px;">
+            {% include 'parts/flash.html' %}
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-6">
+                </div>
+                <div class="col-md-6 text-right">
+                    <a class="btn btn-dark" href="/admin/calendar/all">Back</a>
+                </div>
+            </div>
+            <form ref="form" v-on:submit.prevent="onSubmit" action="" method="POST">
+                <h6 class="h6 mb-3">
+                    <span class="mr-2">Task</span>
+                </h6>
+                <div class="form-group" v-bind:data-error="errors['name']" v-on:click="errors.name=false">
+                    <label for="name" class="mr-1">Name</label>
+                    <input v-model="name" name="name" id="name" type="text" class="form-control">
+                </div>
+                <div class="form-group" v-bind:data-error="errors['description']" v-on:click="errors.description=false">
+                    <label for="description" class="mr-1">Description</label>
+                    <textarea v-model="description" name="description" id="description" class="form-control"></textarea>
+                </div>
+                
+                <div class="form-group" v-bind:data-error="errors['status']" v-on:click="errors.status=false">
+                    <label for="status" class="mr-1">Status</label>
+                    <select v-model="status" name="status" id="status" class="form-control">
+                        <option value="">- SELECT -</option>
+                        <option value="1">Pending</option>
+                        <option value="2">Doing</option>
+                        <option value="3">DONE</option>
+                    </select>
+                </div>
+                <div class="form-group" v-bind:data-error="errors['dueAt']" v-on:click="errors.dueAt=false">
+                    <label for="dueAt" class="mr-1">Due</label>
+                    <input v-model="dueAt" name="dueAt" id="dueAt" type="date" class="form-control">
+                </div>
+                <button class="btn btn-success">Add Task</button>
+                <hr>
+             
+                <h6 class="h6 mb-3">
+                    <span class="mr-2">GSU Account</span>
+                </h6>
+                <div class="form-group" v-bind:data-error="errors['gsumail']" v-on:click="errors.gsumail=false">
+                    <label for="gsumail" class="mr-1">GSU Email Address</label>
+                    <input v-model="gsumail" name="gsumail" id="gsumail" type="email" class="form-control">
+                </div>
+                <div class="form-group" v-bind:data-error="errors['password']" v-on:click="errors.password=false">
+                    <label for="password" class="mr-1">Password</label>
+                    <input v-model="password" name="password" id="password" type="text" class="form-control">
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <button class="btn btn-lg btn-primary">Submit Request</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        mixins: [],
+        data: {
+            errors: {
+                status: false,
+                description: false,
+                name: false,
+                dueAt: false,
+
+                email: false,
+                mobileNumber: false,
+                gsumail: false,
+                password: false,
+            },
+            pending: false,
+            status: '1',
+            description: '',
+            name: '',
+            dueAt: '',
+            password: '{{password}}',
+
+            email: '{{gsuid.email}}',
+            mobileNumber: '{{gsuid.mobileNumber}}',
+            gsumail: '{{gsuid.gsumail}}',
+            password: '{{gsuid.password}}',
+        },
+        computed: {
+           
+        },
+        watch: {
+           
+        },
+        mounted: function () {
+           
+            
+        },
+        methods: {
+            onSubmit: function () {
+                try {
+                    const me = this;
+                    Object.keys(this.$data).forEach(key => {
+                        if(typeof this[key] === 'string'){
+                            this[key] = this[key].trim()
+                        }
+                    });
+                    if (!me.name) {
+                        me.errors['name'] = true
+                        throw new Error('Please specify the Name.')
+                    }
+                    if (!me.description) {
+                        me.errors['description'] = true
+                        throw new Error('Please specify the Description.')
+                    }
+                    if (!me.status) {
+                        me.errors['status'] = true
+                        throw new Error('Please specify the Status.')
+                    }
+                    if (!me.dueAt) {
+                        me.errors['dueAt'] = true
+                        throw new Error('Please specify the Last Name.')
+                    }
+                   
+                    if (!me.gsumail) {
+                        me.errors['gsumail'] = true
+                        throw new Error('Please specify the GSU Email.')
+                    } else {
+                        if (/^[\w-\.+]+@([\w-]+\.)+[\w-]{2,4}$/g.test(me.gsumail) === false) {
+                            me.errors['gsumail'] = true
+                            throw new Error('Invalid email.')
+                        } else {
+                            let domain = me.gsumail?.split('@')?.at(-1)
+                            if (['gsu.edu.ph'].includes(domain) === false) {
+                                me.errors['gsumail'] = true
+                                throw new Error('Must end with @gsu.edu.ph')
+                            }
+                        }
+                    }
+                    if (!me.password) {
+                        me.errors['password'] = true
+                        throw new Error('Please specify the Password.')
+                    }
+                    
+
+                    me.pending = true;
+                    me.$nextTick(function() {
+                        me.$refs.form.submit();
+                    });
+
+                } catch (err) {
+                    alert(err)
+                }
+            }
+        }
+    });
+    
+</script>
+{% endblock %}

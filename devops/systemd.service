@@ -1,0 +1,31 @@
+# SystemD Service for Notes on Calendar
+# location: /etc/systemd/system/
+# file: /etc/systemd/system/nic-portal.service
+# update systemd: sudo systemctl daemon-reload
+# restart: sudo systemctl restart nic-portal
+# status: sudo systemctl status nic-portal
+# start-on-boot: sudo systemctl enable nic-portal
+
+[Unit]
+Description=NIC-Portal
+
+[Service]
+ExecStart=/home/ubuntu/.nvm/versions/node/v20.14.0/bin/node /home/ubuntu/nic-portal/index.js
+
+# Required on some systems
+WorkingDirectory=/home/ubuntu/nic-portal
+
+# Restart service after 10 seconds if node service crashes
+Restart=always
+RestartSec=10
+
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=nodejs-nic-portal
+#User=<alternate user>
+#Group=<alternate group>
+Environment=NODE_ENV=live PORT=9103
+
+[Install]
+WantedBy=multi-user.target

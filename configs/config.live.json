@@ -1,0 +1,12 @@
+{
+  "app": {
+    "url": "https://nic.gsu.edu.ph"
+  },
+  "nunjucks": {
+    "loader": {
+      "watch": false,
+      "noCache": false
+    }
+  },
+  "loginDelay": 5000
+}

@@ -1,0 +1,36 @@
+{% extends "document.html" %}
+{% block body %}
+<div class="row">
+    <div class="col-12 pt-5">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active font-weight-bold" href="/admin/calendar/all">Calendar</a>
+            </li>
+        </ul>
+        <div class="tab-content p-3" style="border-radius:0 0 5px 5px;">
+            {% include 'parts/flash.html' %}
+            <div class="p-3">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active font-weight-bold" href="/admin/calendar/all">Tasks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/calendar/view/{{date|format_date('YYYY-MM-DD')}}/event/all">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/calendar/view/{{date|format_date('YYYY-MM-DD')}}/document/all">Documents</a>
+                    </li>
+                </ul>
+                <div class="tab-content p-3" style="border-radius:0 0 5px 5px;">
+                    <a href="/admin/calendar/view/{{date|format_date('YYYY-MM-DD')}}/task/create" class="btn btn-success">Add</a>
+
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+{% endblock %}
